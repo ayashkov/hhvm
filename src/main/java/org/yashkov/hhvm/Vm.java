@@ -1,19 +1,31 @@
 package org.yashkov.hhvm;
 
 public class Vm {
+    private static final int CODE_SIZE = 4096;
+
+    private static final int HEAP_SIZE = 8192;
+
+    private static final int STACK_SIZE = 4096;
+
+    private final byte[] code = new byte[CODE_SIZE];
+
+    private final byte[] heap = new byte[HEAP_SIZE];
+
+    private final byte[] stack = new byte[STACK_SIZE];
+
     public byte[] getCode()
     {
-        return new byte[4096];
+        return code;
     }
 
     public byte[] getHeap()
     {
-        return new byte[8192];
+        return heap;
     }
 
     public byte[] getStack()
     {
-        return new byte[4096];
+        return stack;
     }
 
     public int getPc()
@@ -23,11 +35,11 @@ public class Vm {
 
     public int getSp()
     {
-        return 4096;
+        return stack.length;
     }
 
     public int getFp()
     {
-        return 4096;
+        return stack.length;
     }
 }
