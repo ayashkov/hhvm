@@ -13,6 +13,8 @@ public class Vm {
 
     private final byte[] stack = new byte[STACK_SIZE];
 
+    private int pc = 0;
+
     public byte[] getCode()
     {
         return code;
@@ -30,7 +32,7 @@ public class Vm {
 
     public int getPc()
     {
-        return 0;
+        return pc;
     }
 
     public int getSp()
@@ -41,5 +43,10 @@ public class Vm {
     public int getFp()
     {
         return stack.length;
+    }
+
+    public void step()
+    {
+        pc++;
     }
 }

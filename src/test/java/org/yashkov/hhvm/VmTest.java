@@ -38,4 +38,16 @@ class VmTest {
     {
         assertThat(vm.getStack()).isSameAs(vm.getStack());
     }
+
+    @Test
+    void step_AdvancesPc_WhenNoOpInstruction()
+    {
+        byte[] load = new byte[] { 0x01 };
+
+        System.arraycopy(load, 0, vm.getCode(), 0, load.length);
+
+        vm.step();
+
+        assertThat(vm.getPc()).isEqualTo(1);
+    }
 }
