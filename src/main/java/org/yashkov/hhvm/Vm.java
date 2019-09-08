@@ -15,4 +15,19 @@ public class Vm {
     {
         return new byte[4096];
     }
+
+    public int getPc()
+    {
+        return 0;
+    }
+
+    public int getSp()
+    {
+        return 4096;
+    }
+
+    public int getFp()
+    {
+        return 4096;
+    }
 }
