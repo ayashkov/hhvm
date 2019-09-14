@@ -1,5 +1,7 @@
 package org.yashkov.hhvm;
 
+import java.util.Arrays;
+
 public class Vm {
     private static final int CODE_SIZE = 4096;
 
@@ -11,20 +13,30 @@ public class Vm {
 
     private final byte[] code = new byte[CODE_SIZE];
 
-    private final byte[] heap = new byte[HEAP_SIZE];
+    private final byte[] data = new byte[HEAP_SIZE];
 
     private final byte[] stack = new byte[STACK_SIZE];
 
-    private int pc = 0;
+    private int pc;
+
+    private int sp;
+
+    public Vm()
+    {
+        Arrays.fill(code, (byte)0x00);
+        Arrays.fill(data, (byte)0xfa);
+        Arrays.fill(stack, (byte)0xfb);
+        reset();
+    }
 
     public byte[] getCode()
     {
         return code;
     }
 
-    public byte[] getHeap()
+    public byte[] getData()
     {
-        return heap;
+        return data;
     }
 
     public byte[] getStack()
@@ -44,7 +56,7 @@ public class Vm {
 
     public int getSp()
     {
-        return stack.length;
+        return sp;
     }
 
     public int getFp()
@@ -57,15 +69,32 @@ public class Vm {
         if (halted)
             return;
 
-        if (code[pc] == 0x00)
+        switch (code[pc++]) {
+        case 0x00:
             halted = true;
 
-        pc++;
+            break;
+        case 0x10:
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+
+            break;
+        case 0x11:
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x01;
+
+            break;
+        }
     }
 
     public void reset()
     {
         pc = 0;
+        sp = stack.length;
         halted = false;
     }
 }
