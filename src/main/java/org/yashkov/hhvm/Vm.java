@@ -52,7 +52,13 @@ public class Vm {
         },
         () -> {},               /* 0x12 */
         () -> {},               /* 0x13 */
-        () -> {}                /* 0x14 LOD */
+        () -> {                 /* 0x14 LDC */
+            stack[--sp] = code[pc + 3];
+            stack[--sp] = code[pc + 2];
+            stack[--sp] = code[pc + 1];
+            stack[--sp] = code[pc];
+            pc += 4;
+        }
     };
 
     public Vm()
