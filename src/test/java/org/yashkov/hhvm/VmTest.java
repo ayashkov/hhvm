@@ -40,14 +40,64 @@ class VmTest {
     }
 
     @Test
-    void step_AdvancesPc_WhenNoOpInstruction()
+    void step_OnlyAdvancesPc_WhenNoOpInstruction()
     {
-        byte[] load = new byte[] { 0x01 };
-
-        System.arraycopy(load, 0, vm.getCode(), 0, load.length);
+        loadCode((byte)0x01, (byte)0x01);
 
         vm.step();
 
         assertThat(vm.getPc()).isEqualTo(1);
+        assertThat(vm.isHalted()).isFalse();
+        assertThat(vm.getSp()).isEqualTo(4 * 1024);
+        assertThat(vm.getFp()).isEqualTo(4 * 1024);
+
+        vm.step();
+
+        assertThat(vm.getPc()).isEqualTo(2);
+        assertThat(vm.isHalted()).isFalse();
+    }
+
+    @Test
+    void step_HaltsExceution_WhenHaltInstruction()
+    {
+        loadCode((byte)0x00, (byte)0x01);
+
+        vm.step();
+
+        assertThat(vm.getPc()).isEqualTo(1);
+        assertThat(vm.isHalted()).isTrue();
+        assertThat(vm.getSp()).isEqualTo(4 * 1024);
+        assertThat(vm.getFp()).isEqualTo(4 * 1024);
+
+        vm.step();
+
+        assertThat(vm.getPc()).isEqualTo(1);
+        assertThat(vm.isHalted()).isTrue();
+    }
+
+
+    @Test
+    void reset_ResetsVM_WhenHalted()
+    {
+        loadCode((byte)0x00);
+
+        vm.step();
+
+        assertThat(vm.getPc()).isEqualTo(1);
+        assertThat(vm.isHalted()).isTrue();
+        assertThat(vm.getSp()).isEqualTo(4 * 1024);
+        assertThat(vm.getFp()).isEqualTo(4 * 1024);
+
+        vm.reset();
+
+        assertThat(vm.getPc()).isEqualTo(0);
+        assertThat(vm.isHalted()).isFalse();
+        assertThat(vm.getSp()).isEqualTo(4 * 1024);
+        assertThat(vm.getFp()).isEqualTo(4 * 1024);
+    }
+
+    private void loadCode(byte... code)
+    {
+        System.arraycopy(code, 0, vm.getCode(), 0, code.length);
     }
 }

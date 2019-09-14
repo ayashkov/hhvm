@@ -7,6 +7,8 @@ public class Vm {
 
     private static final int STACK_SIZE = 4096;
 
+    private boolean halted = false;
+
     private final byte[] code = new byte[CODE_SIZE];
 
     private final byte[] heap = new byte[HEAP_SIZE];
@@ -30,6 +32,11 @@ public class Vm {
         return stack;
     }
 
+    public boolean isHalted()
+    {
+        return halted;
+    }
+
     public int getPc()
     {
         return pc;
@@ -47,6 +54,18 @@ public class Vm {
 
     public void step()
     {
+        if (halted)
+            return;
+
+        if (code[pc] == 0x00)
+            halted = true;
+
         pc++;
+    }
+
+    public void reset()
+    {
+        pc = 0;
+        halted = false;
     }
 }
