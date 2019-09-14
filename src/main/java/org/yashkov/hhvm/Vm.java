@@ -21,11 +21,19 @@ public class Vm {
 
     private int sp;
 
+    private int fp;
+
     private final Op[] operations = new Op[] {
         () -> halted = true,    /* 0x00 HLT */
         () -> {},               /* 0x01 NOP */
-        () -> {},               /* 0x02 */
-        () -> {},               /* 0x03 */
+        () -> {                 /* 0x02 SFP */
+            stack[--sp] = (byte)((fp >> 24) & 0xff);
+            stack[--sp] = (byte)((fp >> 16) & 0xff);
+            stack[--sp] = (byte)((fp >> 8) & 0xff);
+            stack[--sp] = (byte)(fp & 0xff);
+            fp = sp;
+        },
+        () -> {},               /* 0x03 RFP */
         () -> {},               /* 0x04 */
         () -> {},               /* 0x05 */
         () -> {},               /* 0x06 */
@@ -57,7 +65,7 @@ public class Vm {
             stack[--sp] = code[pc];
             pc += 4;
         },
-        () -> {                 /* 0x13 LDL */
+        () -> {                 /* 0x13 LDF */
         },
         () -> {                 /* 0x14 LDI */
             int addr = stack[sp++];
@@ -113,7 +121,7 @@ public class Vm {
 
     public int getFp()
     {
-        return stack.length;
+        return fp;
     }
 
     public void step()
@@ -127,7 +135,7 @@ public class Vm {
     public void reset()
     {
         pc = 0;
-        sp = stack.length;
+        fp = sp = stack.length;
         halted = false;
     }
 
