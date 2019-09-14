@@ -119,14 +119,38 @@ class VmTest {
     }
 
     @Test
-    void step_PushesConstant_WhenLoadInstruction()
+    void step_PushesConstant_WhenLoadConstantInstruction()
     {
-        loadCode((byte)0x14, (byte)0xDE, (byte)0xAD, (byte)0xBE, (byte)0xEF);
+        loadCode((byte)0x12, (byte)0xDE, (byte)0xAD, (byte)0xBE, (byte)0xEF);
 
         vm.step();
 
         assertThat(vm.isHalted()).isFalse();
         assertThat(vm.getPc()).isEqualTo(5);
+        assertThat(vm.getFp()).isEqualTo(4 * 1024);
+
+        byte[] stack = vm.getStack();
+        int sp = vm.getSp();
+
+        assertThat(sp).isEqualTo(4 * 1024 - 4);
+        assertThat(stack[sp]).isEqualTo((byte)0xDE);
+        assertThat(stack[sp + 1]).isEqualTo((byte)0xAD);
+        assertThat(stack[sp + 2]).isEqualTo((byte)0xBE);
+        assertThat(stack[sp + 3]).isEqualTo((byte)0xEF);
+    }
+
+    @Test
+    void step_PushesValueAtAddress_WhenLoadIndirectInstruction()
+    {
+        loadData(0x524, (byte)0xDE, (byte)0xAD, (byte)0xBE, (byte)0xEF);
+        loadCode((byte)0x12, (byte)0x24, (byte)0x05, (byte)0x00, (byte)0x00,
+            (byte)0x14);
+
+        vm.step();
+        vm.step();
+
+        assertThat(vm.isHalted()).isFalse();
+        assertThat(vm.getPc()).isEqualTo(6);
         assertThat(vm.getFp()).isEqualTo(4 * 1024);
 
         byte[] stack = vm.getStack();

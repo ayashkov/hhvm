@@ -44,20 +44,32 @@ public class Vm {
             stack[--sp] = 0x00;
             stack[--sp] = 0x00;
         },
-        () -> {                 /* 0x10 LD1 */
+        () -> {                 /* 0x11 LD1 */
             stack[--sp] = 0x00;
             stack[--sp] = 0x00;
             stack[--sp] = 0x00;
             stack[--sp] = 0x01;
         },
-        () -> {},               /* 0x12 */
-        () -> {},               /* 0x13 */
-        () -> {                 /* 0x14 LDC */
+        () -> {                 /* 0x12 LDC */
             stack[--sp] = code[pc + 3];
             stack[--sp] = code[pc + 2];
             stack[--sp] = code[pc + 1];
             stack[--sp] = code[pc];
             pc += 4;
+        },
+        () -> {                 /* 0x13 LDL */
+        },
+        () -> {                 /* 0x14 LDI */
+            int addr = stack[sp++];
+
+            addr |= stack[sp++] << 8;
+            addr |= stack[sp++] << 16;
+            addr |= stack[sp++] << 24;
+
+            stack[--sp] = data[addr + 3];
+            stack[--sp] = data[addr + 2];
+            stack[--sp] = data[addr + 1];
+            stack[--sp] = data[addr];
         }
     };
 
