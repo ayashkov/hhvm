@@ -21,6 +21,40 @@ public class Vm {
 
     private int sp;
 
+    private final Op[] operations = new Op[] {
+        () -> halted = true,    /* 0x00 HLT */
+        () -> {},               /* 0x01 NOP */
+        () -> {},               /* 0x02 */
+        () -> {},               /* 0x03 */
+        () -> {},               /* 0x04 */
+        () -> {},               /* 0x05 */
+        () -> {},               /* 0x06 */
+        () -> {},               /* 0x07 */
+        () -> {},               /* 0x08 */
+        () -> {},               /* 0x09 */
+        () -> {},               /* 0x0A */
+        () -> {},               /* 0x0B */
+        () -> {},               /* 0x0C */
+        () -> {},               /* 0x0D */
+        () -> {},               /* 0x0E */
+        () -> {},               /* 0x0F */
+        () -> {                 /* 0x10 LD0 */
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+        },
+        () -> {                 /* 0x10 LD1 */
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x00;
+            stack[--sp] = 0x01;
+        },
+        () -> {},               /* 0x12 */
+        () -> {},               /* 0x13 */
+        () -> {}                /* 0x14 LOD */
+    };
+
     public Vm()
     {
         Arrays.fill(code, (byte)0x00);
@@ -69,26 +103,7 @@ public class Vm {
         if (halted)
             return;
 
-        switch (code[pc++]) {
-        case 0x00:
-            halted = true;
-
-            break;
-        case 0x10:
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x00;
-
-            break;
-        case 0x11:
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x00;
-            stack[--sp] = 0x01;
-
-            break;
-        }
+        operations[code[pc++]].execute();
     }
 
     public void reset()
@@ -96,5 +111,10 @@ public class Vm {
         pc = 0;
         sp = stack.length;
         halted = false;
+    }
+
+    @FunctionalInterface
+    private interface Op {
+        void execute();
     }
 }
