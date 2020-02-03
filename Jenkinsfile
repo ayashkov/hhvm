@@ -1,6 +1,7 @@
 pipeline {
   agent {
     kubernetes {
+      defaultContainer 'maven'
       yaml """
 apiVersion: v1
 kind: Pod
@@ -9,12 +10,7 @@ metadata:
 spec:
   containers:
   - name: maven
-    image: maven:alpine
-    command:
-    - cat
-    tty: true
-  - name: busybox
-    image: busybox
+    image: maven:3-jdk-13-alpine
     command:
     - cat
     tty: true
@@ -22,14 +18,9 @@ spec:
     }
   }
   stages {
-    stage('Run maven') {
+    stage('maven') {
       steps {
-        container('maven') {
-          sh 'mvn -version'
-        }
-        container('busybox') {
-          sh '/bin/busybox'
-        }
+        sh 'mvn clean package'
       }
     }
   }
