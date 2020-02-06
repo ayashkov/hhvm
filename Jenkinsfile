@@ -17,7 +17,7 @@ spec:
     image: maven:3-jdk-13-alpine
     volumeMounts:
     - mountPath: "/root/.m2/repository"
-        name: maven-repo
+      name: maven-repo
     command:
     - cat
     tty: true
