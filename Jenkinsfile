@@ -6,7 +6,7 @@ pipeline {
 apiVersion: v1
 kind: Pod
 metadata:
-  namespace: jenkins
+  namespace: dev
 spec:
   volumes:
   - name: maven-repo
