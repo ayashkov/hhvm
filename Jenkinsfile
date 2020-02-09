@@ -23,7 +23,7 @@ spec:
     }
   }
   stages {
-    stage('maven') {
+    stage('build') {
       steps {
         sh 'mvn clean install'
       }
