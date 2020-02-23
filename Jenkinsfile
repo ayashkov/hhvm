@@ -1,7 +1,7 @@
 #!groovy
 
 def target = env.BRANCH_NAME.equals('master') ||
-    env.BRANCH_NAME.startsWith('release/') ? 'deploy' : 'verify'
+    env.BRANCH_NAME.startsWith('release/') ? 'install' : 'verify'
 
 pipeline {
     agent {
