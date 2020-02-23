@@ -28,6 +28,11 @@ spec:
         }
     }
 
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+
     stages {
         stage('build') {
             steps {
