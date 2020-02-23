@@ -1,8 +1,13 @@
+#!groovy
+
+def target = env.BRANCH_NAME.equals('master') ||
+    env.BRANCH_NAME.startsWith('release/') ? 'deploy' : 'verify'
+
 pipeline {
-  agent {
-    kubernetes {
-      defaultContainer 'maven'
-      yaml """
+    agent {
+        kubernetes {
+            defaultContainer 'maven'
+            yaml """
 apiVersion: v1
 kind: Pod
 spec:
@@ -20,13 +25,14 @@ spec:
     - cat
     tty: true
 """
+        }
     }
-  }
-  stages {
-    stage('build') {
-      steps {
-        sh 'mvn clean install'
-      }
+
+    stages {
+        stage('build') {
+            steps {
+                sh "mvn clean ${target}"
+            }
+        }
     }
-  }
 }
