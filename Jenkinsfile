@@ -6,7 +6,7 @@ def target = env.BRANCH_NAME.equals('master') ||
 pipeline {
     agent {
         kubernetes {
-            label 'maven'
+            inheritFrom: 'maven'
             defaultContainer 'maven'
         }
     }
