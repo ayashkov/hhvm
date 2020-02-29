@@ -3,6 +3,8 @@
 def target = env.BRANCH_NAME.equals('master') ||
     env.BRANCH_NAME.startsWith('release/') ? 'install' : 'verify'
 
+// Test pull request
+
 pipeline {
     agent {
         kubernetes {
